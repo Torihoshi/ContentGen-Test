@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yext API データ表示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .content {
+            margin: 20px;
+        }
+        .image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1 id="title">Loading...</h1>
+        <p id="description"></p>
+        <div id="markdown-body"></div>
+        <div id="extra-items"></div>
+    </div>
+
+    <script>
+        // APIキーやURLの変数定義
+        const apiUrl = 'https://sbx-cdn.yextapis.com/v2/accounts/me/entities?api_key=87af78dcbda8220536ab1581ed258118&v=20240401&entityTypes=ce_column_ContentGen';
+
+        // APIリクエストとデータ取得
+        async function fetchData() {
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                // レスポンスから必要なデータを取得
+                const entity = data.response.entities[0];
+                const title = entity.name;
+                const description = entity.description;
+                const body = entity.c_column_Body2.markdown;
+                const items = entity.c_column_item_1;
+
+                // データをHTMLに挿入
+                document.getElementById('title').textContent = title;
+                document.getElementById('description').textContent = description;
+
+                // マークダウン形式の本文を挿入
+                const markdownBody = document.getElementById('markdown-body');
+                markdownBody.innerHTML = marked.parse(body); // marked.jsを使用してマークダウンをHTMLに変換
+
+                // アイテムリストを表示
+                const extraItems = document.getElementById('extra-items');
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.innerHTML = marked.parse(item.markdown); // marked.jsを使用
+                    extraItems.appendChild(itemDiv);
+                });
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // ページ読み込み時にデータを取得して表示
+        window.onload = fetchData;
+    </script>
+
+    <!-- marked.js をCDNから読み込む（マークダウンをHTMLに変換するため） -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</body>
+</html>
