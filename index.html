@@ -21,9 +21,8 @@
 <body>
     <div class="content">
         <h1 id="title">Loading...</h1>
-        <p id="description"></p>
         <div id="markdown-body"></div>
-        <div id="extra-items"></div>
+        <div id="markdown-body-2"></div>
     </div>
 
     <script>
@@ -50,7 +49,7 @@
                 markdownBody.innerHTML = marked.parse(body); // marked.jsを使用してマークダウンをHTMLに変換
 
                 // マークダウン形式の本文2を挿入
-                const markdownBody = document.getElementById('markdown-body');
+                const markdownBody = document.getElementById('markdown-body-2');
                 markdownBody.innerHTML = marked.parse(body2); // marked.jsを使用してマークダウンをHTMLに変換
 
             } catch (error) {
