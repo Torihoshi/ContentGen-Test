@@ -3,42 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APIから記事を表示</title>
+    <title>Yext API データ表示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+        }
+        .content {
+            margin: 20px;
+        }
+        .image {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>APIから取得した記事</h1>
-
-    <div id="articleBody"></div>
-    <div id="articleBody2"></div>
+    <div class="content">
+        <h1 id="title">Loading...</h1>
+        <p id="description"></p>
+        <div id="markdown-body"></div>
+        <div id="extra-items"></div>
+    </div>
 
     <script>
-        async function fetchArticle() {
-            const apiUrl = 'https://sbx-cdn.yextapis.com/v2/accounts/me/entities?api_key=87af78dcbda8220536ab1581ed258118&v=20240401&entityTypes=ce_column_ContentGen';
+        // APIキーやURLの変数定義
+        const apiUrl = 'https://sbx-cdn.yextapis.com/v2/accounts/me/entities?api_key=87af78dcbda8220536ab1581ed258118&v=20240401&entityTypes=ce_column_ContentGen';
 
+        // APIリクエストとデータ取得
+        async function fetchData() {
             try {
                 const response = await fetch(apiUrl);
                 const data = await response.json();
 
-                // 1番目のエンティティを取得
+                // レスポンスから必要なデータを取得
                 const entity = data.response.entities[0];
+                const title = entity.name;
+                const description = entity.description;
+                const body = entity.c_column_Body.markdown;
+                const items = entity.c_column_item_1;
 
-                // c_column_Bodyとc_columnBody2の内容を取得
-                const columnBody = entity.c_column_Body.markdown;
-                const columnBody2 = entity.c_columnBody2.markdown;
+                // データをHTMLに挿入
+                document.getElementById('title').textContent = title;
+                document.getElementById('description').textContent = description;
 
-                // MarkdownをHTMLに変換して表示 (シンプルなMarkdown処理、ライブラリの利用も可能)
-                document.getElementById('articleBody').innerHTML = marked(columnBody);
-                document.getElementById('articleBody2').innerHTML = marked(columnBody2);
+                // マークダウン形式の本文を挿入
+                const markdownBody = document.getElementById('markdown-body');
+                markdownBody.innerHTML = marked.parse(body); // marked.jsを使用してマークダウンをHTMLに変換
+
+                // アイテムリストを表示
+                const extraItems = document.getElementById('extra-items');
+                items.forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.innerHTML = marked.parse(item.markdown); // marked.jsを使用
+                    extraItems.appendChild(itemDiv);
+                });
+
             } catch (error) {
-                console.error('データの取得に失敗しました:', error);
+                console.error('Error fetching data:', error);
             }
         }
 
-        // ページ読み込み時に実行
-        window.onload = fetchArticle;
+        // ページ読み込み時にデータを取得して表示
+        window.onload = fetchData;
     </script>
 
-    <!-- Markdownの変換にはmarked.jsなどのライブラリを使用する -->
+    <!-- marked.js をCDNから読み込む（マークダウンをHTMLに変換するため） -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
