@@ -39,25 +39,19 @@
                 // レスポンスから必要なデータを取得
                 const entity = data.response.entities[0];
                 const title = entity.name;
-                const description = entity.description;
                 const body = entity.c_column_Body.markdown;
-                const items = entity.c_column_item_1;
+                const body2 = entity.c_column_Body2.markdown;
 
                 // データをHTMLに挿入
                 document.getElementById('title').textContent = title;
-                document.getElementById('description').textContent = description;
 
                 // マークダウン形式の本文を挿入
                 const markdownBody = document.getElementById('markdown-body');
                 markdownBody.innerHTML = marked.parse(body); // marked.jsを使用してマークダウンをHTMLに変換
 
-                // アイテムリストを表示
-                const extraItems = document.getElementById('extra-items');
-                items.forEach(item => {
-                    const itemDiv = document.createElement('div');
-                    itemDiv.innerHTML = marked.parse(item.markdown); // marked.jsを使用
-                    extraItems.appendChild(itemDiv);
-                });
+                // マークダウン形式の本文2を挿入
+                const markdownBody = document.getElementById('markdown-body');
+                markdownBody.innerHTML = marked.parse(body2); // marked.jsを使用してマークダウンをHTMLに変換
 
             } catch (error) {
                 console.error('Error fetching data:', error);
