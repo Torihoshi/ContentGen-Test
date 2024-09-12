@@ -49,8 +49,8 @@
                 markdownBody.innerHTML = marked.parse(body); // marked.jsを使用してマークダウンをHTMLに変換
 
                 // マークダウン形式の本文2を挿入
-                const markdownBody = document.getElementById('markdown-body-2');
-                markdownBody.innerHTML = marked.parse(body2); // marked.jsを使用してマークダウンをHTMLに変換
+                const markdownBody2 = document.getElementById('markdown-body-2');
+                markdownBody2.innerHTML = marked.parse(body2); // marked.jsを使用してマークダウンをHTMLに変換
 
             } catch (error) {
                 console.error('Error fetching data:', error);
